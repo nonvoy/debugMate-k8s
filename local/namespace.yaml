@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: debugmate-local
+  labels:
+    app.kubernetes.io/name: debugmate
+    environment: local

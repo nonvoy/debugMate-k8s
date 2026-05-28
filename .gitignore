@@ -1,0 +1,3 @@
+# Only commit example secret files, not the actual ones with sensitive data
+local/secret.yaml
+!local/secret.example.yaml
