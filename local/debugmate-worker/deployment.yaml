@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: debugmate-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: debugmate-worker
+  template:
+    metadata:
+      labels:
+        app: debugmate-worker
+    spec:
+      containers:
+        - name: debugmate-worker
+          image: debugmate-worker:local
+          imagePullPolicy: Never
+          env:
+            - name: ENVIRONMENT
+              value: "local"
+            - name: CELERY__BROKER_URL
+              valueFrom:
+                secretKeyRef:
+                  name: debugmate-local-secrets
+                  key: CELERY_BROKER_URL
+            - name: CELERY__ENDPOINT_URL
+              value: "http://localstack:4566"
+            - name: CELERY__IS_SECURE
+              value: "false"
+            - name: CELERY__REGION
+              value: "eu-central-1"
+            - name: CELERY__QUEUE_NAME
+              value: "debugmate-queue"
+            - name: CELERY__QUEUE_URL
+              value: "http://localstack:4566/000000000000/debugmate-queue"
+            - name: OPENSEARCH__URL
+              value: "http://opensearch:9200"
+            - name: OPENSEARCH__USE_SSL
+              value: "false"
+            - name: OPENSEARCH__VERIFY_CERTS
+              value: "false"
+            - name: OPENSEARCH__SSL_ASSERT_HOSTNAME
+              value: "false"
+            - name: OPENSEARCH__SSL_SHOW_WARN
+              value: "false"
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: debugmate-local-secrets
+                  key: AWS_ACCESS_KEY_ID
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: debugmate-local-secrets
+                  key: AWS_SECRET_ACCESS_KEY
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - celery -A worker.celery_app inspect ping -d celery@$HOSTNAME
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 3
