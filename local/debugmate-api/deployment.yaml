@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: debugmate-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: debugmate-api
+  template:
+    metadata:
+      labels:
+        app: debugmate-api
+    spec:
+      containers:
+        - name: debugmate-api
+          image: debugmate-api:local
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8000
+          env:
+            - name: DEBUG
+              value: "true"
+            - name: CELERY__BROKER_URL
+              valueFrom:
+                secretKeyRef:
+                  name: debugmate-local-secrets
+                  key: CELERY_BROKER_URL
+            - name: CELERY__QUEUE_NAME
+              value: "debugmate-queue"
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: 8000
+            initialDelaySeconds: 20
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: 8000
+            initialDelaySeconds: 20
+            periodSeconds: 10
