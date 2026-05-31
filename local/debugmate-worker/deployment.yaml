@@ -43,7 +43,7 @@ spec:
                 - sh
                 - -c
                 - celery -A app:celery_app inspect ping -d celery@$HOSTNAME
-            initialDelaySeconds: 40
-            periodSeconds: 20
+            initialDelaySeconds: 20
+            periodSeconds: 10
             timeoutSeconds: 10
             failureThreshold: 5
