@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: debugmate-worker
-          image: debugmate-worker:0.1.6-local
+          image: debugmate-worker:local
           imagePullPolicy: Never
           env:
             - name: ENVIRONMENT
