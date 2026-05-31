@@ -21,6 +21,8 @@ spec:
           env:
             - name: DEBUG
               value: "true"
+            - name: ENVIRONMENT
+              value: "local"
             - name: CELERY__BROKER_URL
               valueFrom:
                 secretKeyRef:
