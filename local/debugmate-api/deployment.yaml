@@ -30,6 +30,19 @@ spec:
                   key: CELERY_BROKER_URL
             - name: CELERY__QUEUE_NAME
               value: "debugmate-queue"
+            - name: OPENSEARCH__URL
+              valueFrom:
+                secretKeyRef:
+                  name: debugmate-local-secrets
+                  key: OPENSEARCH_URL
+            - name: OPENSEARCH__USE_SSL
+              value: "false"
+            - name: OPENSEARCH__VERIFY_CERTS
+              value: "false"
+            - name: OPENSEARCH__SSL_ASSERT_HOSTNAME
+              value: "false"
+            - name: OPENSEARCH__SSL_SHOW_WARN
+              value: "false"
           livenessProbe:
             httpGet:
               path: /health/live
