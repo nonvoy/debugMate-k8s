@@ -44,6 +44,11 @@ spec:
               value: "false"
             - name: OPENSEARCH__SSL_SHOW_WARN
               value: "false"
+            - name: DB_URL
+              valueFrom:
+                secretKeyRef:
+                  name: debugmate-local-secrets
+                  key: DB_URL
           livenessProbe:
             httpGet:
               path: /health/live
